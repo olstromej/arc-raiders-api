@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Arc Raiders Items API
+Globals:
+  Function:
+    Timeout: 10
+Resources:
+  ArcRaidersApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ArcRaidersApiFunction
+      Handler: app.handler
+      Runtime: python3.13
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+    Metadata:
+      SamResourceId: ArcRaidersApiFunction

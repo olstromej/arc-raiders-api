@@ -3,11 +3,11 @@ import random
 import schedule
 import time
 
-# Discord webhook URL (hard-coded for now)
+# Discord webhook URL
 WEBHOOK_URL = "https://discord.com/api/webhooks/1420481165693026324/SB81pgThvD3TFVZMeZNkTc-TRHWvQDgqHXnfjMG2h9czMTyp9NodsCBdIz5Dcu5Nl15W"
 
-# AWS API Gateway endpoint
-API_URL = "https://m3tcyghjy5.execute-api.us-east-1.amazonaws.com/Prod/items"
+# FastAPI endpoint
+API_URL = "http://127.0.0.1:8000/items"
 
 # Arc Raiders color palette (hex)
 COLORS = [
@@ -18,7 +18,7 @@ COLORS = [
     0x9B59B6   # Purple
 ]
 
-# Category icons (optional)
+# Category icons (replace with real images later)
 CATEGORY_ICONS = {
     "weapon": "https://i.imgur.com/1f8b4c.png",
     "medical": "https://i.imgur.com/f1c40f.png",
@@ -53,11 +53,15 @@ def post_to_discord(item):
     color = random.choice(COLORS)
     icon_url = CATEGORY_ICONS.get(category, None)
 
+    # Construct the image URL based on the item name
+    item_image_url = f"https://raw.githubusercontent.com/RaidTheory/arcraiders-data/main/items/{item['name'].replace(' ', '_').lower()}.png"
+
     embed = {
-        "title": f"Here is your weekly item, Raiders!",
-        "description": f"**{item['name']}**\nCategory: {item['category']}\n{item.get('description', '')}",
+        "title": item["name"],
+        "description": f"**Category:** {item['category']}\n{item.get('description', '')}",
         "color": color,
-        "thumbnail": {"url": icon_url} if icon_url else None
+        "thumbnail": {"url": icon_url} if icon_url else None,
+        "image": {"url": item_image_url}
     }
 
     data = {"embeds": [embed]}
@@ -88,9 +92,6 @@ def post_weekly_item():
 schedule.every().monday.at("10:00").do(post_weekly_item)
 
 print("Arc Raiders weekly poster running...")
-
-# Run immediately for testing
-post_weekly_item()
 
 while True:
     schedule.run_pending()

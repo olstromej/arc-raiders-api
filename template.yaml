@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Arc Raiders Items API
+
+Globals:
+  Function:
+    Timeout: 10   # Max execution time in seconds for Lambda
+
+Resources:
+  ArcRaidersApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .                    # Location of your app.py and requirements.txt
+      Handler: app.handler           # Points to 'handler = Mangum(app)' in app.py
+      Runtime: python3.13            # Python version for Lambda
+      Events:
+        Api:
+          Type: Api                 # Exposes your Lambda via API Gateway
+          Properties:
+            Path: /{proxy+}        # Catch-all path, all routes pass through
+            Method: ANY             # Allow GET, POST, etc.
