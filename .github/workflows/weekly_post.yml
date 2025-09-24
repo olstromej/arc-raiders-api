@@ -1,23 +1,22 @@
 name: Weekly Arc Raiders Post
 
-# Trigger the workflow on a schedule (every Monday at 10:00 UTC)
 on:
   schedule:
-    - cron: "0 10 * * 1"  # Every Monday at 10:00 UTC
-  workflow_dispatch:  # Allows manual run from GitHub Actions UI
+    - cron: '0 10 * * MON'  # Every Monday at 10:00 UTC
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
   post_weekly_item:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.13"
+          python-version: 3.13
 
       - name: Install dependencies
         run: |
@@ -26,7 +25,15 @@ jobs:
           pip install --upgrade pip
           pip install requests schedule
 
-      - name: Run weekly_post.py
+      - name: Run weekly post
         run: |
           source venv/bin/activate
           python weekly_post.py
+
+      - name: Commit posted items
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add posted_items.txt
+          git commit -m "Update posted_items.txt after weekly post" || echo "No changes to commit"
+          git push
