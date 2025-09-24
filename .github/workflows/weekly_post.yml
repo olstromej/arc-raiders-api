@@ -1,0 +1,32 @@
+name: Weekly Arc Raiders Post
+
+# Trigger the workflow on a schedule (every Monday at 10:00 UTC)
+on:
+  schedule:
+    - cron: "0 10 * * 1"  # Every Monday at 10:00 UTC
+  workflow_dispatch:  # Allows manual run from GitHub Actions UI
+
+jobs:
+  post_weekly_item:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install requests schedule
+
+      - name: Run weekly_post.py
+        run: |
+          source venv/bin/activate
+          python weekly_post.py

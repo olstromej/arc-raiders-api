@@ -1,29 +1,15 @@
 import requests
 import random
-import schedule
-import time
+import os
 
-# Discord webhook URL (hard-coded for now)
+# Discord webhook URL (hardcoded)
 WEBHOOK_URL = "https://discord.com/api/webhooks/1420481165693026324/SB81pgThvD3TFVZMeZNkTc-TRHWvQDgqHXnfjMG2h9czMTyp9NodsCBdIz5Dcu5Nl15W"
 
-# AWS API Gateway endpoint
+# FastAPI endpoint (your AWS API Gateway URL)
 API_URL = "https://m3tcyghjy5.execute-api.us-east-1.amazonaws.com/Prod/items"
 
 # Arc Raiders color palette (hex)
-COLORS = [
-    0x1F8B4C,  # Green
-    0xF1C40F,  # Yellow
-    0xE74C3C,  # Red
-    0x3498DB,  # Blue
-    0x9B59B6   # Purple
-]
-
-# Category icons (optional)
-CATEGORY_ICONS = {
-    "weapon": "https://i.imgur.com/1f8b4c.png",
-    "medical": "https://i.imgur.com/f1c40f.png",
-    "material": "https://i.imgur.com/3498db.png"
-}
+COLORS = [0x1F8B4C, 0xF1C40F, 0xE74C3C, 0x3498DB, 0x9B59B6]
 
 # Track posted items
 posted_items_file = "posted_items.txt"
@@ -49,15 +35,12 @@ def save_posted_item(item_name):
 
 def post_to_discord(item):
     """Send an item to Discord via webhook."""
-    category = item["category"].lower()
     color = random.choice(COLORS)
-    icon_url = CATEGORY_ICONS.get(category, None)
 
     embed = {
-        "title": f"Here is your weekly item, Raiders!",
+        "title": "Here is your weekly item, Raiders! 🎯",
         "description": f"**{item['name']}**\nCategory: {item['category']}\n{item.get('description', '')}",
-        "color": color,
-        "thumbnail": {"url": icon_url} if icon_url else None
+        "color": color
     }
 
     data = {"embeds": [embed]}
@@ -68,11 +51,9 @@ def post_to_discord(item):
     else:
         print("Failed to post:", response.text)
 
-def post_weekly_item():
-    """Select a new item and post it to Discord."""
+def main():
     items = get_items()
     posted = get_posted_items()
-
     remaining_items = [item for item in items if item["name"] not in posted]
 
     if not remaining_items:
@@ -84,14 +65,5 @@ def post_weekly_item():
     post_to_discord(item)
     save_posted_item(item["name"])
 
-# Schedule weekly posting
-schedule.every().monday.at("10:00").do(post_weekly_item)
-
-print("Arc Raiders weekly poster running...")
-
-# Run immediately for testing
-post_weekly_item()
-
-while True:
-    schedule.run_pending()
-    time.sleep(60)
+if __name__ == "__main__":
+    main()
