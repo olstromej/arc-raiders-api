@@ -3,3 +3,4 @@ Film Reel
 Mechanical Components
 Arpeggio I
 Energy Shield
+Heavy Shield
