@@ -6,3 +6,4 @@ Energy Shield
 Heavy Shield
 Nanite Mesh
 Faded Photograph
+Extended Shotgun Mag IV
