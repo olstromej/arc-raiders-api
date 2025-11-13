@@ -11,3 +11,4 @@ Torrente I
 Plasma Core
 Fabric
 Equalizer I
+Railgun
