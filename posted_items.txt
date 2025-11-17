@@ -13,3 +13,4 @@ Fabric
 Equalizer I
 Railgun
 Anvil I
+Empty Wine Bottle
